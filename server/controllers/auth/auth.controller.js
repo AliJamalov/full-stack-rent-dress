@@ -7,21 +7,61 @@ export const register = async (req, res) => {
   try {
     const { userName, firstName, phone, password, role } = req.body;
 
-    if (!userName || !firstName || !password || !phone) {
-      return res.status(400).json({ message: "Все поля обязательны." });
-    }
-
-    const isUsed = await User.findOne({ userName });
-
-    if (isUsed) {
-      return res.json({
-        message: "Данный username уже занят.",
+    // Проверка на обязательные поля
+    if (!userName || !firstName || !phone || !password) {
+      return res.status(400).json({
+        message: "Bütün sahələr doldurulmalıdır.",
+        success: false,
       });
     }
 
+    // Проверка длины имени пользователя
+    if (userName.length < 3 || userName.length > 30) {
+      return res.status(400).json({
+        message: "İstifadəçi adı 3-dən 30 simvola qədər olmalıdır.",
+        success: false,
+      });
+    }
+
+    // Проверка длины имени
+    if (firstName.length < 2) {
+      return res.status(400).json({
+        message: "Ad ən azı 2 simvoldan ibarət olmalıdır.",
+        success: false,
+      });
+    }
+
+    // Проверка телефона (формат: от 10 до 15 символов)
+    const phoneRegex = /^\+994[0-9]{9}$/;
+    if (!phoneRegex.test(phone)) {
+      return res.status(400).json({
+        message: "Telefon nömrəsi düzgün formatda olmalıdır: +994XXXXXXXXX.",
+        success: false,
+      });
+    }
+
+    // Проверка длины пароля
+    if (password.length < 8) {
+      return res.status(400).json({
+        message: "Şifrə ən azı 8 simvoldan ibarət olmalıdır.",
+        success: false,
+      });
+    }
+
+    // Проверка на существующий userName
+    const isUsed = await User.findOne({ userName });
+    if (isUsed) {
+      return res.status(400).json({
+        message: "Bu istifadəçi adı artıq mövcuddur.",
+        success: false,
+      });
+    }
+
+    // Хеширование пароля
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
 
+    // Создание нового пользователя
     const newUser = new User({
       userName,
       firstName,
@@ -30,6 +70,7 @@ export const register = async (req, res) => {
       role: role || "user",
     });
 
+    // Генерация токена
     const token = jwt.sign(
       {
         id: newUser._id,
@@ -38,15 +79,20 @@ export const register = async (req, res) => {
       { expiresIn: "30d" }
     );
 
+    // Сохранение пользователя в базе данных
     await newUser.save();
 
+    // Возвращаем результат с флагом успеха
     res.json({
-      newUser,
+      success: true,
+      message: "Qeydiyyat uğurla başa çatdı.",
       token,
-      message: "Регистрация прошла успешно.",
     });
   } catch (error) {
-    res.status(500).json({ message: "Ошибка при создании пользователя." });
+    res.status(500).json({
+      success: false,
+      message: "İstifadəçi yaradılarkən xəta baş verdi.",
+    });
   }
 };
 
@@ -56,20 +102,15 @@ export const login = async (req, res) => {
     const { userName, password } = req.body;
     const user = await User.findOne({ userName });
 
-    if (!user) {
+    // Проверяем наличие пользователя
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.json({
-        message: "Такого юзера не существует.",
+        success: false,
+        message: "Yanlış istifadəçi adı və ya şifrə.", // "Неверный пароль или имя пользователя"
       });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordCorrect) {
-      return res.json({
-        message: "Неверный пароль.",
-      });
-    }
-
+    // Если имя пользователя и пароль верные
     const token = jwt.sign(
       {
         id: user._id,
@@ -79,12 +120,16 @@ export const login = async (req, res) => {
     );
 
     res.json({
+      success: true,
       token,
       user,
-      message: "Вы вошли в систему.",
+      message: "Sistəmdə daxil oldunuz.", // "Вы вошли в систему."
     });
   } catch (error) {
-    res.json({ message: "Ошибка при авторизации." });
+    res.json({
+      success: false,
+      message: "Autentifikasiya zamanı xəta baş verdi.", // "Ошибка при авторизации."
+    });
   }
 };
 

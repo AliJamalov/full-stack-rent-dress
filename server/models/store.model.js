@@ -19,7 +19,8 @@ const StoreSchema = new mongoose.Schema(
       street: { type: String, required: true },
     },
     ownerId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },

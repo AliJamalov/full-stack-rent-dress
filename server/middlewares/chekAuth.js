@@ -11,7 +11,7 @@ export const checkAuth = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     req.userId = decoded.id;
-    req.userRole = decoded.role; // Передаём роль из токена
+    req.userRole = decoded.role;
 
     next();
   } catch (error) {

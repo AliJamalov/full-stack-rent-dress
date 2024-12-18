@@ -2,11 +2,6 @@ import mongoose from "mongoose";
 
 const AnnouncementSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true,
-      maxlength: 100,
-    },
     description: {
       type: String,
       required: true,
@@ -46,12 +41,26 @@ const AnnouncementSchema = new mongoose.Schema(
       required: true,
     },
     userId: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: function () {
+        return !this.storeId; // Если storeId есть, то userId не должен быть обязательным
+      },
     },
     city: {
       type: String,
       required: true,
+    },
+    userPhone: {
+      type: String,
+      required: true,
+    },
+    storeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Store",
+      required: function () {
+        return !this.userId; // Если userId есть, то storeId не должен быть обязательным
+      },
     },
   },
   { timestamps: true }

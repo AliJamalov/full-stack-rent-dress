@@ -12,6 +12,6 @@ router.post("/register", register);
 
 router.post("/login", login);
 
-router.get("/me", checkAuth, getMe);
+router.get("/getMe", checkAuth, getMe);
 
 export default router;
