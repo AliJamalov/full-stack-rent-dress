@@ -21,6 +21,13 @@ const HeroSection = () => {
     fetchHeroSection();
   }, []);
 
+  const showAnnouncements = () => {
+    window.scrollTo({
+      top: document.getElementById("announcements-section").offsetTop,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <section>
       <div className="h-64 relative overflow-hidden md:w-full md:h-[430px]">
@@ -35,12 +42,17 @@ const HeroSection = () => {
             alt="hero-image"
           />
         )}
-        <div className="text-white absolute top-2 p-[50px] md:p-[100px]">
+        <div className="text-white absolute top-2 p-[30px] md:p-[100px]">
           <h1 className="mb-3 text-[26px] font-semibold md:text-[36px] md:font-bold">
-            Don't buy it, borrow it.
+            Baha alma, günlük götür!
           </h1>
-          <p className="mb-4 text-[19px]">{heroSection.description}</p>
-          <button className="bg-[#ab386e] py-2 px-4 rounded-md md:py-3 md:px-6">
+          <p className="mb-4 text-[16px] md:text-[19px]">
+            {heroSection.description}
+          </p>
+          <button
+            onClick={showAnnouncements}
+            className="bg-[#ab386e] py-2 px-4 rounded-md md:py-3 md:px-6"
+          >
             elanlara bax
           </button>
         </div>

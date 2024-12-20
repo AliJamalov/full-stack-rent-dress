@@ -5,6 +5,7 @@ export const createAnnouncement = async (req, res) => {
     const {
       description,
       clothingCollection,
+      brand,
       gender,
       category,
       size,
@@ -13,14 +14,17 @@ export const createAnnouncement = async (req, res) => {
       images,
       city,
       userPhone,
+      userName,
     } = req.body;
     console.log(req.body);
+
     // Проверка на пустые поля
     if (
       !description ||
       !clothingCollection ||
       !gender ||
       !category ||
+      !brand ||
       !size ||
       !color ||
       !pricePerDay ||
@@ -42,6 +46,13 @@ export const createAnnouncement = async (req, res) => {
       return res.status(401).json({ message: "Не авторизован." });
     }
 
+    // Проверка на обязательность userName для обычных пользователей
+    if (!storeId && !userName) {
+      return res
+        .status(400)
+        .json({ message: "Для пользователя обязательное поле: userName." });
+    }
+
     // В зависимости от того, кто создает объявление, выбираем нужный ID
     let creatorId = userId;
     if (!creatorId && storeId) {
@@ -58,6 +69,7 @@ export const createAnnouncement = async (req, res) => {
     const newAnnouncement = new Announcement({
       description,
       clothingCollection,
+      brand,
       gender,
       category,
       size,
@@ -66,6 +78,7 @@ export const createAnnouncement = async (req, res) => {
       images,
       city,
       userPhone,
+      userName: storeId ? undefined : userName, // Если это магазин, userName не передаем
       userId: userId || null, // Если это обычный пользователь
       storeId: storeId || null, // Если это магазин
     });
@@ -84,26 +97,40 @@ export const createAnnouncement = async (req, res) => {
   }
 };
 
-export const getAllAnnouncements = async (req, res) => {
+export const getFilteredAnnouncements = async (req, res) => {
   try {
-    const { page = 1, limit } = req.query; // Дефолтные значения: 1-я страница,
+    const {
+      page = 1,
+      limit,
+      gender,
+      category,
+      brand,
+      clothingCollection,
+      color,
+      size,
+    } = req.query;
 
-    // Преобразование строковых параметров в числа
+    console.log("Received query params:", req.query); // Лог для проверки пришедших параметров
+
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
-
-    // Определяем пропуск (skip) и лимит
     const skip = (pageNumber - 1) * limitNumber;
 
-    // Получаем общее количество объявлений
-    const totalAnnouncements = await Announcement.countDocuments();
+    const filters = {};
 
-    // Получаем данные с учетом пагинации
-    const announcements = await Announcement.find()
+    if (gender) filters.gender = gender;
+    if (category) filters.category = category;
+    if (clothingCollection) filters.clothingCollection = clothingCollection;
+    if (color) filters.color = color;
+    if (size) filters.size = size;
+    if (brand) filters.brand = brand;
+
+    const totalAnnouncements = await Announcement.countDocuments(filters);
+
+    const announcements = await Announcement.find(filters)
       .skip(skip)
       .limit(limitNumber);
 
-    // Возвращаем данные с информацией о пагинации
     res.status(200).json({
       announcements,
       currentPage: pageNumber,
@@ -111,7 +138,7 @@ export const getAllAnnouncements = async (req, res) => {
       totalAnnouncements,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching announcements:", error);
     res.status(500).json({ message: "Ошибка при получении объявлений." });
   }
 };

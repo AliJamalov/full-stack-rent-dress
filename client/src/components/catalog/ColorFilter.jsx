@@ -20,17 +20,29 @@ const colors = [
   { name: "Qızılı", css: "#FFD700" }, // Золотой
 ];
 
-const ColorFilter = () => {
+const ColorFilter = ({ setFilters, filters }) => {
+  const handleColorChange = (color) => {
+    // Если цвет уже выбран, сбрасываем его (удаляем из фильтров)
+    if (filters?.color === color) {
+      setFilters("color", null);
+    } else {
+      setFilters("color", color); // Устанавливаем выбранный цвет
+    }
+  };
+
   return (
     <div className="w-[250px] pb-[25px] border-b border-[#ab386e]">
-      <h2 className="text-[22px] my-3">Colors</h2>
+      <h2 className="text-[22px] my-3">Rənglər</h2>
       <div className="flex flex-wrap gap-2">
         {colors.map((color) => (
           <button
             key={color.name}
             style={{ backgroundColor: color.css }}
-            className="w-[40px] h-[40px] border border-gray-300"
+            className={`w-[40px] h-[40px] border border-gray-300 ${
+              filters?.color === color.name ? "border-4 border-[#ab386e]" : ""
+            }`}
             aria-label={color.name}
+            onClick={() => handleColorChange(color.name)}
           />
         ))}
       </div>

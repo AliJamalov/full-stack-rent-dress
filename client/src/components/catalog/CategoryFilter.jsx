@@ -1,36 +1,54 @@
 import React, { useState, useEffect } from "react";
-import { Separator } from "../ui/separator";
 import { ScrollArea } from "../ui/scroll-area";
-import instance from "@/utils/baseUrl"; // Подключение к API, если нужно
+import instance from "@/utils/baseUrl";
 
-const CategoryFilter = () => {
-  const [categories, setCategories] = useState([]); // Хранение категорий
+const CategoryFilter = ({ setFilters, filters }) => {
+  const [categories, setCategories] = useState([]);
 
   // Функция для получения категорий с API
   const fetchCategories = async () => {
     try {
       const response = await instance.get("/categories");
-      setCategories(response.data); // Заполняем состояние реальными категориями
+      setCategories(response.data);
     } catch (error) {
       console.log("Error fetching categories", error);
     }
   };
 
   useEffect(() => {
-    fetchCategories(); // Загружаем категории при монтировании компонента
+    fetchCategories();
   }, []);
 
+  // Обработчик изменения фильтра
+  const handleCategoryChange = (category) => {
+    if (filters?.category === category) {
+      // Если категория уже выбрана, убираем фильтр
+      setFilters("category", null);
+    } else {
+      // Устанавливаем выбранную категорию
+      setFilters("category", category);
+    }
+  };
+
   return (
-    <section className="w-[250px] border-[#ab386e] border-b">
+    <section className="w-[250px] border-[#ab386e] border-b pb-[25px]">
       <div>
-        <h2 className="text-[22px] my-3">Categories</h2>
+        <h2 className="text-[22px] my-3">Kateqoriyalar</h2>
         <ScrollArea className="h-[150px]">
           <ul>
             {categories.length > 0 ? (
               categories.map((category) => (
-                <li key={category.id} className="p-2">
-                  <span className="text-sm">{category.title}</span>
-                  {/* Отображаем только название категории */}
+                <li key={category._id} className="p-2">
+                  <span
+                    onClick={() => handleCategoryChange(category.title)}
+                    className={`${
+                      filters?.category === category.title
+                        ? "text-[#ab386e] text-[20px]"
+                        : ""
+                    } cursor-pointer text-sm`}
+                  >
+                    {category.title}
+                  </span>
                 </li>
               ))
             ) : (

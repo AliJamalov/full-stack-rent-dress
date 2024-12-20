@@ -34,7 +34,9 @@ function App() {
 
   return (
     <>
-      {!isAdminRoute && <Header handleOpenLogin={handleOpenLogin} />}
+      {!isAdminRoute && (
+        <Header handleOpenLogin={handleOpenLogin} isOpenLogin={isOpenLogin} />
+      )}
       <Toaster toastOptions={{ duration: 3000 }} />
       <Routes>
         {/*Admin Routes*/}

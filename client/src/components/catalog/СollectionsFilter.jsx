@@ -1,36 +1,50 @@
 import React, { useState, useEffect } from "react";
-import { ScrollArea } from "../ui/scroll-area"; // Используется для прокрутки, если нужно
-import { Separator } from "../ui/separator"; // Разделитель для улучшения визуала
-import instance from "@/utils/baseUrl"; // Подключение к API, если нужно
+import { ScrollArea } from "../ui/scroll-area";
+import instance from "@/utils/baseUrl";
 
-const CollectionsFilter = () => {
-  const [collections, setCollections] = useState([]); // Хранение коллекций
+const CollectionsFilter = ({ setFilters, filters }) => {
+  const [collections, setCollections] = useState([]);
 
-  // Функция для получения коллекций с API
   const fetchCollections = async () => {
     try {
       const response = await instance.get("/clothingCollections");
-      setCollections(response.data); // Заполняем состояние реальными коллекциями
+      setCollections(response.data);
     } catch (error) {
       console.log("Error fetching collections", error);
     }
   };
 
   useEffect(() => {
-    fetchCollections(); // Загружаем коллекции при монтировании компонента
+    fetchCollections();
   }, []);
+
+  const handleCollectionChange = (collection) => {
+    if (filters?.clothingCollection === collection) {
+      setFilters("clothingCollection", null);
+    } else {
+      setFilters("clothingCollection", collection);
+    }
+  };
 
   return (
     <section className="w-[250px] pb-[25px] border-[#ab386e] border-b">
       <div>
-        <h2 className="text-[22px] my-3">Collections</h2>
+        <h2 className="text-[22px] my-3">Kolleksiyalar</h2>
         <ScrollArea className="h-[150px]">
           <ul>
             {collections.length > 0 ? (
               collections.map((collection, index) => (
                 <li key={index} className="p-2">
-                  <span className="text-sm">{collection.title}</span>
-                  {/* Отображаем только название коллекции */}
+                  <span
+                    onClick={() => handleCollectionChange(collection.title)}
+                    className={`${
+                      filters?.clothingCollection === collection.title
+                        ? "text-[#ab386e] text-[20px]"
+                        : ""
+                    } cursor-pointer text-sm`}
+                  >
+                    {collection.title}
+                  </span>
                 </li>
               ))
             ) : (

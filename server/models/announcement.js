@@ -11,6 +11,10 @@ const AnnouncementSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    brand: {
+      type: String,
+      required: true,
+    },
     gender: {
       type: String,
       required: true,
@@ -54,6 +58,12 @@ const AnnouncementSchema = new mongoose.Schema(
     userPhone: {
       type: String,
       required: true,
+    },
+    userName: {
+      type: String,
+      required: function () {
+        return !this.storeId; // Если storeId нет, то userName обязателен
+      },
     },
     storeId: {
       type: mongoose.Schema.Types.ObjectId,

@@ -1,13 +1,34 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Container from "../common/Container";
 import { Heart, Plus, User } from "lucide-react";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { TailSpin } from "react-loader-spinner";
 import toast from "react-hot-toast";
+import Login from "../home/Login";
 
-const Header = ({ handleOpenLogin }) => {
+const Header = ({ handleOpenLogin, isOpenLogin }) => {
   const { user, isLoading } = useAuthStore();
+
+  const navigate = useNavigate();
+  const categories = [
+    { name: "Kişi", query: "gender=Kişi" },
+    { name: "Qadın", query: "gender=Qadın" },
+    { name: "Uşaq", query: "gender=Uşaq" },
+    {
+      name: "Gəlinlik paltarları",
+      query: "clothingCollection=gəlinlik paltarları",
+    },
+    {
+      name: "Korporativ geyimlər",
+      query: "clothingCollection=Korporativ geyimlər",
+    },
+  ];
+
+  // Обработчик клика по категории
+  const handleCategoryClick = (query) => {
+    navigate(`/catalog?${query}`); // Переход с передачей query-параметра
+  };
 
   return (
     <header>
@@ -31,11 +52,15 @@ const Header = ({ handleOpenLogin }) => {
             </Link>
             <div>
               <ul className="flex items-center gap-4">
-                <li>qadın</li>
-                <li>kişi</li>
-                <li>gəlinlik paltarları</li>
-                <li>İdman geyimləri</li>
-                <li>Gündəlik geyim</li>
+                {categories.map((category) => (
+                  <li
+                    key={category.name}
+                    onClick={() => handleCategoryClick(category.query)}
+                    className="cursor-pointer hover:text-[#ab386e]"
+                  >
+                    {category.name}
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="flex items-center gap-4">
@@ -44,7 +69,7 @@ const Header = ({ handleOpenLogin }) => {
                 onClick={(e) => {
                   if (!user) {
                     e.preventDefault(); // Останавливает переход на страницу
-                    toast("Elan yaratmaq üçün daxil olun.");
+                    handleOpenLogin();
                   }
                 }}
                 to="/create-announcement"
@@ -56,22 +81,17 @@ const Header = ({ handleOpenLogin }) => {
               </Link>
               {isLoading ? (
                 <TailSpin height={30} width={30} color="#ab386e" />
-              ) : user ? (
-                <Link to={"/my-profile"}>
-                  <div className="flex items-center gap-1 ">
-                    <div className="bg-[#ab386e] p-1 rounded-xl">
-                      <User className="text-white" />
-                    </div>
-                    <p>{user.firstName}</p>
-                  </div>
-                </Link>
               ) : (
-                <button
-                  onClick={handleOpenLogin}
-                  className="bg-[#ab386e] py-2 px-5 text-white rounded-md shadow-md"
-                >
-                  giriş
-                </button>
+                user && (
+                  <Link to={"/my-profile"}>
+                    <div className="flex items-center gap-1 ">
+                      <div className="bg-[#ab386e] p-1 rounded-xl">
+                        <User className="text-white" />
+                      </div>
+                      <p>{user.firstName}</p>
+                    </div>
+                  </Link>
+                )
               )}
             </div>
           </div>
@@ -129,6 +149,11 @@ const Header = ({ handleOpenLogin }) => {
           </div>
         </div>
       </Container>
+      {isOpenLogin && (
+        <div className="fixed z-50 inset-0 bg-black bg-opacity-50">
+          <Login handleOpenLogin={handleOpenLogin} />
+        </div>
+      )}
     </header>
   );
 };

@@ -46,7 +46,7 @@ const Elanlar = () => {
   }, [currentPage]);
 
   return (
-    <section className="bg-[#f1f3f7] py-12">
+    <section id="announcements-section" className="bg-[#f1f3f7] py-12">
       <Container>
         <h1 className="text-4xl text-[#ab386e] font-semibold mb-8 text-center">
           Elanlar
@@ -61,7 +61,7 @@ const Elanlar = () => {
               <div className="bg-white shadow-md rounded-lg mx-auto w-full max-w-[170px] sm:max-w-[230px] md:max-w-[250px] lg:max-w-[310px] overflow-hidden">
                 <div className="h-[150px] sm:h-[200px] md:h-[220px] lg:h-[250px]">
                   <img
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     src={elan.images[0]}
                     alt="elan-image"
                   />

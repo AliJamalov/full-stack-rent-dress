@@ -45,7 +45,7 @@ const ElanDetail = () => {
                   src={activeImage}
                   loading="lazy"
                   alt="elan-image"
-                  className="w-full h-64 object-cover"
+                  className="w-full h-64 object-contain"
                 />
               </div>
               {/* images */}
@@ -73,7 +73,6 @@ const ElanDetail = () => {
               <p className="text-lg font-semibold text-gray-800 mt-4">
                 Kolleksiya: {elan.clothingCollection}
               </p>
-              <p className="text-lg text-gray-800 mt-2">Cins: {elan.gender}</p>
               <p className="text-lg text-gray-800 mt-2">
                 Kateqoriya: {elan.category}
               </p>

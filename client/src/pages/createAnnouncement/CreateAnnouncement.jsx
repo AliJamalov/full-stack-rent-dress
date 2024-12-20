@@ -17,6 +17,60 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { uploadImages } from "@/utils/cloudinary";
 import { Label } from "@/components/ui/label";
 
+const clothingBrands = [
+  "digər brend",
+  "Nike",
+  "Adidas",
+  "Puma",
+  "Reebok",
+  "Under Armour",
+  "Levi's",
+  "Zara",
+  "H&M",
+  "Gucci",
+  "Chanel",
+  "Prada",
+  "Louis Vuitton",
+  "Calvin Klein",
+  "Tommy Hilfiger",
+  "Ralph Lauren",
+  "The North Face",
+  "Columbia",
+  "Patagonia",
+  "Uniqlo",
+  "New Balance",
+  "Vans",
+  "Converse",
+  "Fendi",
+  "Balenciaga",
+  "Burberry",
+  "Saint Laurent",
+  "Alexander McQueen",
+  "BOSS",
+  "Skechers",
+  "Forever 21",
+  "Mango",
+  "Stradivarius",
+  "Bershka",
+  "Pull&Bear",
+  "Superdry",
+  "Jack & Jones",
+  "Tommy Jeans",
+  "Wrangler",
+  "Diesel",
+  "Lacoste",
+  "Fila",
+  "Carhartt",
+  "Lee",
+  "Wrangler",
+  "Ted Baker",
+  "Vivienne Westwood",
+  "A Bathing Ape",
+  "Stone Island",
+  "Moncler",
+  "Canada Goose",
+];
+
 const CreateAnnouncementForm = () => {
   const { user } = useAuthStore();
   const colors = [
@@ -42,6 +96,7 @@ const CreateAnnouncementForm = () => {
   const initialForm = {
     clothingCollection: "",
     category: "",
+    brand: "",
     size: "",
     gender: "",
     color: "",
@@ -50,6 +105,7 @@ const CreateAnnouncementForm = () => {
     description: "",
     images: [],
     userPhone: "",
+    userName: "",
   };
 
   // Общий state для формы
@@ -61,6 +117,7 @@ const CreateAnnouncementForm = () => {
       setFormData((prevData) => ({
         ...prevData,
         userPhone: user.phone,
+        userName: user.firstName,
       }));
     }
   }, [user]);
@@ -153,6 +210,7 @@ const CreateAnnouncementForm = () => {
       setFormData({
         ...initialForm,
         userPhone: user.phone, // Снова задаём userPhone
+        userName: user.firstName,
       });
       setImagePreviews([]);
     } catch (error) {
@@ -253,7 +311,7 @@ const CreateAnnouncementForm = () => {
               </SelectTrigger>
               <SelectContent>
                 {colors.map((item) => (
-                  <SelectItem key={item.name} value={item.css}>
+                  <SelectItem key={item.name} value={item.name}>
                     <div className="flex items-center space-x-2">
                       <span
                         className="w-4 h-4 rounded-full"
@@ -289,6 +347,29 @@ const CreateAnnouncementForm = () => {
               placeholder="Şəhər"
             />
           </div>
+
+          {/* Brand*/}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">Brend</label>
+            <Select
+              value={formData.brand}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, brand: value }))
+              }
+            >
+              <SelectTrigger className="w-full p-2 border rounded-md">
+                <SelectValue placeholder="Brendi seçin" />
+              </SelectTrigger>
+              <SelectContent>
+                {clothingBrands.map((brand, index) => (
+                  <SelectItem key={index} value={brand}>
+                    {brand}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Gender */}
           <RadioGroup
             value={formData.gender}
@@ -301,6 +382,10 @@ const CreateAnnouncementForm = () => {
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Qadın" id="option-two" />
               <Label htmlFor="option-two">Qadın</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Uşaq" id="option-two" />
+              <Label htmlFor="option-three">Uşaq</Label>
             </div>
           </RadioGroup>
 

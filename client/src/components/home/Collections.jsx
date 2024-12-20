@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Container from "../common/Container";
 import instance from "@/utils/baseUrl";
 import { SkeletonCard } from "../skeletons/CollectionsSkeleton";
+import { Link } from "react-router-dom";
 
 const Collections = () => {
   const [collections, setCollections] = useState([]);
@@ -34,7 +35,11 @@ const Collections = () => {
           {isLoading
             ? skeletonArray.map((_, index) => <SkeletonCard key={index} />)
             : collections.map((item, index) => (
-                <div key={index} className="my-2">
+                <Link
+                  to={`/catalog?clothingCollection=${item.title}`}
+                  key={index}
+                  className="my-2"
+                >
                   <div className="w-full h-[250px] sm:h-[300px] md:h-[300px] lg:h-[300px]">
                     <img
                       className="w-full h-full object-cover rounded-lg"
@@ -43,7 +48,7 @@ const Collections = () => {
                     />
                   </div>
                   <p className="mt-2">{item.title}</p>
-                </div>
+                </Link>
               ))}
         </div>
       </Container>

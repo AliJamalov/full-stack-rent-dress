@@ -1,7 +1,7 @@
 import express from "express";
 import {
   createAnnouncement,
-  getAllAnnouncements,
+  getFilteredAnnouncements,
   getAnnouncementById,
   updateAnnouncement,
   deleteAnnouncement,
@@ -12,7 +12,7 @@ import { checkAuth } from "../../middlewares/chekAuth.js";
 const router = express.Router();
 
 router.post("/", checkAuth, createAnnouncement); // Создание объявления
-router.get("/", getAllAnnouncements); // Получение всех объявлений (можно добавить фильтры)
+router.get("/", getFilteredAnnouncements); // Получение всех объявлений (можно добавить фильтры)
 router.get("/byUser", checkAuth, getUserAnnouncements);
 router.get("/:id", getAnnouncementById); // Получение объявления по ID
 router.patch("/:id", checkAuth, updateAnnouncement); // Обновление объявления
