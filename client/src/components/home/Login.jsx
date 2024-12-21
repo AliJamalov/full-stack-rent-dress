@@ -33,9 +33,7 @@ const Login = ({ handleOpenLogin }) => {
         toast.success("Sistemə uğurla daxil oldunuz");
         setPassword("");
         setUserName("");
-        setTimeout(() => {
-          handleOpenLogin();
-        }, 2000);
+        handleOpenLogin();
       } else {
         setErrorMessage(response.message); // Если ответ не успешен, показываем ошибку
       }

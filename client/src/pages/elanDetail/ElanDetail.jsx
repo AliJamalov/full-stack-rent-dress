@@ -76,6 +76,7 @@ const ElanDetail = () => {
               <p className="text-lg text-gray-800 mt-2">
                 Kateqoriya: {elan.category}
               </p>
+              <p className="text-lg text-gray-800 mt-2">Brend: {elan.brand}</p>
               <p className="text-lg text-gray-800 mt-2">Ölçü: {elan.size}</p>
               <p className="text-lg text-gray-800 mt-2">
                 Günlük qiymət: {elan.pricePerDay} AZN

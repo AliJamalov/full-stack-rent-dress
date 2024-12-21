@@ -16,7 +16,6 @@ export const createAnnouncement = async (req, res) => {
       userPhone,
       userName,
     } = req.body;
-    console.log(req.body);
 
     // Проверка на пустые поля
     if (
@@ -108,13 +107,33 @@ export const getFilteredAnnouncements = async (req, res) => {
       clothingCollection,
       color,
       size,
+      sortBy = "lowtohigh",
+      search, // Добавляем параметр поиска
     } = req.query;
 
-    console.log("Received query params:", req.query); // Лог для проверки пришедших параметров
+    const sort = {};
 
-    const pageNumber = parseInt(page, 10);
-    const limitNumber = parseInt(limit, 10);
-    const skip = (pageNumber - 1) * limitNumber;
+    switch (sortBy) {
+      case "lowtohigh":
+        sort.pricePerDay = 1;
+        break;
+
+      case "hightolow":
+        sort.pricePerDay = -1;
+        break;
+
+      case "newest":
+        sort.createdAt = -1;
+        break;
+
+      case "oldest":
+        sort.createdAt = 1;
+        break;
+
+      default:
+        sort.pricePerDay = 1;
+        break;
+    }
 
     const filters = {};
 
@@ -125,11 +144,27 @@ export const getFilteredAnnouncements = async (req, res) => {
     if (size) filters.size = size;
     if (brand) filters.brand = brand;
 
+    // Добавляем фильтрацию по поисковому запросу
+    if (search) {
+      const searchRegex = new RegExp(search, "i"); // i — для нечувствительности к регистру
+      filters.$or = [
+        { category: { $regex: searchRegex } },
+        { brand: { $regex: searchRegex } },
+        { clothingCollection: { $regex: searchRegex } },
+        { color: { $regex: searchRegex } },
+      ];
+    }
+
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    const skip = (pageNumber - 1) * limitNumber;
+
     const totalAnnouncements = await Announcement.countDocuments(filters);
 
     const announcements = await Announcement.find(filters)
       .skip(skip)
-      .limit(limitNumber);
+      .limit(limitNumber)
+      .sort(sort);
 
     res.status(200).json({
       announcements,

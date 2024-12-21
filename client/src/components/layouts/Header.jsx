@@ -1,16 +1,16 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "../common/Container";
-import { Heart, Plus, User } from "lucide-react";
+import { Heart, LogOutIcon, Plus, User } from "lucide-react";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { TailSpin } from "react-loader-spinner";
-import toast from "react-hot-toast";
 import Login from "../home/Login";
 
 const Header = ({ handleOpenLogin, isOpenLogin }) => {
-  const { user, isLoading } = useAuthStore();
+  const { user, isLoading, logout } = useAuthStore();
 
   const navigate = useNavigate();
+
   const categories = [
     { name: "Kişi", query: "gender=Kişi" },
     { name: "Qadın", query: "gender=Qadın" },
@@ -26,8 +26,15 @@ const Header = ({ handleOpenLogin, isOpenLogin }) => {
   ];
 
   // Обработчик клика по категории
-  const handleCategoryClick = (query) => {
-    navigate(`/catalog?${query}`); // Переход с передачей query-параметра
+  const handleCategoryClick = (category) => {
+    // Преобразуем категорию в формат с дефисами и в нижний регистр
+    const formattedCategory = category.replace(/\s+/g, "+");
+
+    // Формируем query-параметр
+    const query = `${formattedCategory}`;
+
+    // Переходим по маршруту с query-параметром
+    navigate(`/catalog?${query}`);
   };
 
   return (
@@ -64,7 +71,14 @@ const Header = ({ handleOpenLogin, isOpenLogin }) => {
               </ul>
             </div>
             <div className="flex items-center gap-4">
-              <Heart />
+              <div className="flex items-center gap-3">
+                {user && (
+                  <LogOutIcon className="cursor-pointer" onClick={logout} />
+                )}
+                <div className="p-2 rounded-full bg-[#ab386e]">
+                  <Heart color="white" size={16} />
+                </div>
+              </div>
               <Link
                 onClick={(e) => {
                   if (!user) {
@@ -85,7 +99,7 @@ const Header = ({ handleOpenLogin, isOpenLogin }) => {
                 user && (
                   <Link to={"/my-profile"}>
                     <div className="flex items-center gap-1 ">
-                      <div className="bg-[#ab386e] p-1 rounded-xl">
+                      <div className="bg-black p-1 rounded-xl">
                         <User className="text-white" />
                       </div>
                       <p>{user.firstName}</p>
@@ -99,52 +113,52 @@ const Header = ({ handleOpenLogin, isOpenLogin }) => {
         {/* Mobile */}
         <div className="lg:hidden">
           <div className="flex justify-between items-center">
-            {isLoading ? (
-              <TailSpin height={30} width={30} color="#ab386e" />
-            ) : user ? (
-              <Link to={"/my-profile"}>
-                <div className="bg-[#ab386e] p-1 rounded-xl">
-                  <User className="text-white" />
+            <div className="flex items-center gap-2">
+              {isLoading ? (
+                <TailSpin height={30} width={30} color="#ab386e" />
+              ) : user ? (
+                <Link to="/my-profile">
+                  <div className="bg-black p-1 rounded-xl">
+                    <User className="text-white" />
+                  </div>
+                </Link>
+              ) : null}
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-full bg-[#ab386e]">
+                  <Heart color="white" size={16} />
                 </div>
-              </Link>
-            ) : (
-              <button
-                onClick={handleOpenLogin}
-                className="bg-[#ab386e] py-1 px-2 text-white rounded-md shadow-md"
-              >
-                <p className="text-[14px]">giriş</p>
-              </button>
-            )}
-            <Link to={"/"}>
+                {user && <LogOutIcon onClick={logout} />}
+              </div>
+            </div>
+            <Link to="/">
               <div className="flex items-center gap-1">
                 <div className="w-[70px]">
                   <img
                     className="w-full rounded-sm"
                     src="/public/images/logo-best.jpg"
-                    alt="logo-image"
+                    alt="logo"
                   />
                 </div>
-                <h1 className="font-semibold text-[16px] text-[#ab386e] font-darker-grotesque">
+                <h1 className="font-semibold text-[19px] text-[#ab386e] font-darker-grotesque">
                   Rent Dress
                 </h1>
               </div>
             </Link>
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 bg-green-600 rounded-sm shadow-md text-white p-2 cursor-pointer">
+              <button
+                className="flex items-center gap-1 bg-green-600 rounded-sm shadow-md text-white p-2"
+                onClick={(e) => {
+                  if (!user) {
+                    e.preventDefault(); // Останавливаем переход по ссылке
+                    handleOpenLogin(); // Открываем модальное окно для логина
+                  }
+                }}
+              >
                 <Plus size={14} />
-                <Link
-                  onClick={(e) => {
-                    if (!user) {
-                      e.preventDefault(); // Останавливает переход на страницу
-                      toast("Elan yaratmaq üçün daxil olun.");
-                    }
-                  }}
-                  to="/create-announcement"
-                >
-                  <p className="text-[14px]">yeni elan</p>
+                <Link to="/create-announcement" className="text-[14px]">
+                  elan
                 </Link>
-              </div>
-              <Heart size={16} />
+              </button>
             </div>
           </div>
         </div>

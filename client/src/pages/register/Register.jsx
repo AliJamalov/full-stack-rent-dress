@@ -39,7 +39,7 @@ const Register = () => {
       if (response.success) {
         toast.success("Qeydiyyat uğurla başa çatdı");
         setFormData(initialForm);
-        setTimeout(() => navigate("/"), 2000);
+        navigate("/");
       } else {
         setErrorMessage(response.message);
       }
@@ -60,17 +60,17 @@ const Register = () => {
             className="bg-black flex items-center gap-2 rounded-md shadow-md text-white py-5 px-10"
           >
             <User />
-            istifadəçi kimi
+            istifadəçi
           </button>
           <button
             onClick={() => {
               setHideButtons(false);
               setIsOpenRegisterForStore(!isOpenRegisterForStore);
             }}
-            className="bg-black flex items-center gap-2 rounded-md shadow-md text-white py-5 px-10"
+            className="bg-black flex items-center gap-2 rounded-md shadow-md text-white py-5 px-11"
           >
             <Store />
-            mağaza sahibi kimi
+            mağaza
           </button>
         </div>
       )}
