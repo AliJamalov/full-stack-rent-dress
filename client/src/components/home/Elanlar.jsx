@@ -15,7 +15,7 @@ const Elanlar = () => {
     setLoading(true);
     try {
       const response = await instance.get(
-        `/announcements?page=${page}&limit=10`
+        `/announcements?page=${page}&limit=12`
       );
       const { announcements, totalPages } = response.data;
       setElanlar((prev) => [...prev, ...announcements]); // Добавляем новые данные

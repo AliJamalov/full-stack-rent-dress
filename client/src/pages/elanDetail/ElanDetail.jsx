@@ -7,14 +7,14 @@ import { TailSpin } from "react-loader-spinner";
 const ElanDetail = () => {
   const { elanId } = useParams();
 
-  const [elan, setElan] = useState(null);
+  const [elan, setElan] = useState({});
   const [activeImage, setActiveImage] = useState(null);
 
   const fetchElanById = async () => {
     try {
-      const response = await instance.get(`/announcements/${elanId}`);
+      const response = await instance.get(`/announcements/annId/${elanId}`);
       setElan(response.data);
-      setActiveImage(response.data.images[0]);
+      setActiveImage(response.data.images);
       console.log(response);
     } catch (error) {
       console.log("error fetching", error);
@@ -50,20 +50,24 @@ const ElanDetail = () => {
               </div>
               {/* images */}
               <div className="flex mt-3 space-x-2">
-                {elan?.images.map((image, index) => (
-                  <div key={index}>
-                    <img
-                      onClick={() => setActiveImage(image)}
-                      className={`w-16 h-16 object-cover cursor-pointer border ${
-                        activeImage === image
-                          ? "border-[#ab386e]"
-                          : "border-gray-300"
-                      }`}
-                      src={image}
-                      alt="image"
-                    />
-                  </div>
-                ))}
+                {Array.isArray(elan?.images) && elan.images.length > 0 ? (
+                  elan.images.map((image, index) => (
+                    <div key={index}>
+                      <img
+                        onClick={() => setActiveImage(image)}
+                        className={`w-16 h-16 object-cover cursor-pointer border ${
+                          activeImage === image
+                            ? "border-[#ab386e]"
+                            : "border-gray-300"
+                        }`}
+                        src={image}
+                        alt="image"
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <p>No images available</p>
+                )}
               </div>
             </div>
             <div className="lg:w-1/2 lg:pl-10 mt-8 lg:mt-0">

@@ -168,6 +168,11 @@ const Catalog = () => {
                     key={announcement._id}
                     className="bg-white mx-[2px] lg:mx-0 p-4 shadow-lg rounded-lg flex flex-col transition-transform duration-300 hover:scale-105 lg:max-h-[400px]"
                   >
+                    {announcement.userName === "store" && (
+                      <div className="bg-[#ab386e] p-1 w-[90px] text-white rounded-md flex justify-center">
+                        magaza
+                      </div>
+                    )}
                     <img
                       src={announcement.images[0]}
                       alt="image-elan"

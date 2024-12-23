@@ -14,6 +14,9 @@ import CreateAnnouncement from "./pages/createAnnouncement/CreateAnnouncement";
 import MyProfile from "./pages/myProfile/MyProfile";
 import ElanDetail from "./pages/elanDetail/ElanDetail";
 import Catalog from "./pages/catalog/Catalog";
+import CreateStore from "./pages/createStore/CreateStore";
+import OwnerKabinet from "./pages/ownerKabinet/OwnerKabinet";
+import StoreDetail from "./pages/storeDetail/StoreDetail";
 
 function App() {
   const { getMe } = useAuthStore();
@@ -58,6 +61,9 @@ function App() {
         <Route path="/my-profile" element={<MyProfile />} />
         <Route path="/elan/:elanId" element={<ElanDetail />} />
         <Route path="/catalog" element={<Catalog />} />
+        <Route path="/create-store" element={<CreateStore />} />
+        <Route path="/store-panel" element={<OwnerKabinet />} />
+        <Route path="/store-detail/:storeId" element={<StoreDetail />} />
       </Routes>
     </>
   );

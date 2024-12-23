@@ -47,9 +47,7 @@ const AnnouncementSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: function () {
-        return !this.storeId; // Если storeId есть, то userId не должен быть обязательным
-      },
+      required: true,
     },
     city: {
       type: String,
@@ -61,16 +59,6 @@ const AnnouncementSchema = new mongoose.Schema(
     },
     userName: {
       type: String,
-      required: function () {
-        return !this.storeId; // Если storeId нет, то userName обязателен
-      },
-    },
-    storeId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Store",
-      required: function () {
-        return !this.userId; // Если userId есть, то storeId не должен быть обязательным
-      },
     },
   },
   { timestamps: true }

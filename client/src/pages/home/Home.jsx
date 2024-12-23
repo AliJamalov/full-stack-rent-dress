@@ -2,11 +2,13 @@ import Collections from "@/components/home/Collections";
 import Elanlar from "@/components/home/Elanlar";
 import HeroSection from "@/components/home/HeroSection";
 import Login from "@/components/home/Login";
+import Stores from "@/components/home/Stores";
 
 const Home = ({ isOpenLogin, handleOpenLogin }) => {
   return (
     <div>
       <HeroSection />
+      <Stores />
       <Collections />
       <Elanlar />
       {isOpenLogin && (

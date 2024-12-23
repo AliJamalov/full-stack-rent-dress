@@ -6,16 +6,18 @@ import {
   updateAnnouncement,
   deleteAnnouncement,
   getUserAnnouncements,
+  getStoreAnnouncements,
 } from "../../controllers/shop/announcement.controller.js";
 import { checkAuth } from "../../middlewares/chekAuth.js";
 
 const router = express.Router();
 
-router.post("/", checkAuth, createAnnouncement); // Создание объявления
-router.get("/", getFilteredAnnouncements); // Получение всех объявлений (можно добавить фильтры)
+router.post("/", checkAuth, createAnnouncement);
+router.get("/", getFilteredAnnouncements);
 router.get("/byUser", checkAuth, getUserAnnouncements);
-router.get("/:id", getAnnouncementById); // Получение объявления по ID
-router.patch("/:id", checkAuth, updateAnnouncement); // Обновление объявления
-router.delete("/:id", checkAuth, deleteAnnouncement); // Удаление объявления
+router.get("/:userId", getStoreAnnouncements);
+router.get("/annId/:id", getAnnouncementById);
+router.patch("/:id", checkAuth, updateAnnouncement);
+router.delete("/:id", checkAuth, deleteAnnouncement);
 
 export default router;

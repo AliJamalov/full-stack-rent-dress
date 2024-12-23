@@ -21,15 +21,15 @@ export const createAnnouncement = async (req, res) => {
     if (
       !description ||
       !clothingCollection ||
+      !brand ||
       !gender ||
       !category ||
-      !brand ||
       !size ||
       !color ||
       !pricePerDay ||
       !images ||
-      !userPhone ||
       !images.length ||
+      !userPhone ||
       !city
     ) {
       return res
@@ -37,31 +37,11 @@ export const createAnnouncement = async (req, res) => {
         .json({ message: "Все поля должны быть заполнены." });
     }
 
-    // Проверка на авторизацию и определение, кто создает объявление
-    const userId = req.userId;
-    const storeId = req.storeId; // Здесь предполагается, что это поле доступно для магазинов
+    // Проверка на авторизацию
+    const userId = req.userId; // ID пользователя из токена
 
-    if (!userId && !storeId) {
+    if (!userId) {
       return res.status(401).json({ message: "Не авторизован." });
-    }
-
-    // Проверка на обязательность userName для обычных пользователей
-    if (!storeId && !userName) {
-      return res
-        .status(400)
-        .json({ message: "Для пользователя обязательное поле: userName." });
-    }
-
-    // В зависимости от того, кто создает объявление, выбираем нужный ID
-    let creatorId = userId;
-    if (!creatorId && storeId) {
-      creatorId = storeId;
-    }
-
-    if (!creatorId) {
-      return res
-        .status(400)
-        .json({ message: "ID пользователя или магазина не найдено." });
     }
 
     // Создание нового объявления
@@ -77,9 +57,8 @@ export const createAnnouncement = async (req, res) => {
       images,
       city,
       userPhone,
-      userName: storeId ? undefined : userName, // Если это магазин, userName не передаем
-      userId: userId || null, // Если это обычный пользователь
-      storeId: storeId || null, // Если это магазин
+      userName,
+      userId, // Используем userId для обычных пользователей
     });
 
     // Сохранение объявления
@@ -248,6 +227,41 @@ export const getUserAnnouncements = async (req, res) => {
   try {
     // req.userId берётся из checkAuth
     const userId = req.userId;
+
+    const announcements = await Announcement.find({ userId });
+
+    if (!announcements.length) {
+      return res.status(200).json({
+        success: true,
+        message: "Sizin yaratdığınız elan yoxdur.",
+        announcements: [],
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      announcements,
+    });
+  } catch (error) {
+    console.error("Error fetching user announcements:", error);
+    res.status(500).json({
+      success: false,
+      message:
+        "Elanları yükləyərkən xəta baş verdi. Zəhmət olmasa, yenidən cəhd edin.",
+    });
+  }
+};
+
+export const getStoreAnnouncements = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "İstifadəçi ID-si tələb olunur.",
+      });
+    }
 
     const announcements = await Announcement.find({ userId });
 

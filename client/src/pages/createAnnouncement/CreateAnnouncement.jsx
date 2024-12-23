@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { uploadImages } from "@/utils/cloudinary";
 import { Label } from "@/components/ui/label";
+import { useStore } from "@/stores/useStore";
 
 const clothingBrands = [
   "digər brend",
@@ -56,7 +57,6 @@ const clothingBrands = [
   "Superdry",
   "Jack & Jones",
   "Tommy Jeans",
-  "Wrangler",
   "Diesel",
   "Lacoste",
   "Fila",
@@ -73,6 +73,7 @@ const clothingBrands = [
 
 const CreateAnnouncementForm = () => {
   const { user } = useAuthStore();
+
   const colors = [
     { name: "Qara", css: "#000000" }, // Чёрный
     { name: "Ağ", css: "#FFFFFF" }, // Белый
@@ -288,8 +289,8 @@ const CreateAnnouncementForm = () => {
                 <SelectValue placeholder="Ölçü seçin" />
               </SelectTrigger>
               <SelectContent>
-                {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
-                  <SelectItem key={size} value={size}>
+                {["XS", "S", "M", "L", "XL", "XXL"].map((size, index) => (
+                  <SelectItem key={index} value={size}>
                     {size}
                   </SelectItem>
                 ))}
@@ -310,8 +311,8 @@ const CreateAnnouncementForm = () => {
                 <SelectValue placeholder="Rəng seçin" />
               </SelectTrigger>
               <SelectContent>
-                {colors.map((item) => (
-                  <SelectItem key={item.name} value={item.name}>
+                {colors.map((item, index) => (
+                  <SelectItem key={index} value={item.name}>
                     <div className="flex items-center space-x-2">
                       <span
                         className="w-4 h-4 rounded-full"

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "../common/Container";
-import { Heart, LogOutIcon, Plus, User } from "lucide-react";
+import { Heart, LogOutIcon, Plus, Store, User } from "lucide-react";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { TailSpin } from "react-loader-spinner";
 import Login from "../home/Login";
@@ -97,10 +97,16 @@ const Header = ({ handleOpenLogin, isOpenLogin }) => {
                 <TailSpin height={30} width={30} color="#ab386e" />
               ) : (
                 user && (
-                  <Link to={"/my-profile"}>
+                  <Link
+                    to={user.role === "owner" ? "/store-panel" : "/my-profile"}
+                  >
                     <div className="flex items-center gap-1 ">
                       <div className="bg-black p-1 rounded-xl">
-                        <User className="text-white" />
+                        {user.role === "user" ? (
+                          <User className="text-white" />
+                        ) : (
+                          <Store className="text-white" />
+                        )}
                       </div>
                       <p>{user.firstName}</p>
                     </div>
@@ -117,7 +123,9 @@ const Header = ({ handleOpenLogin, isOpenLogin }) => {
               {isLoading ? (
                 <TailSpin height={30} width={30} color="#ab386e" />
               ) : user ? (
-                <Link to="/my-profile">
+                <Link
+                  to={user.role === "owner" ? "/store-panel" : "/my-profile"}
+                >
                   <div className="bg-black p-1 rounded-xl">
                     <User className="text-white" />
                   </div>

@@ -14,9 +14,13 @@ const StoreSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    phone: {
+      type: String,
+      required: true,
+    },
     storeAddress: {
-      city: { type: String, required: true },
-      street: { type: String, required: true },
+      type: String,
+      required: true,
     },
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
