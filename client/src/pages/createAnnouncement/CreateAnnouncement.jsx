@@ -16,7 +16,6 @@ import toast from "react-hot-toast";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { uploadImages } from "@/utils/cloudinary";
 import { Label } from "@/components/ui/label";
-import { useStore } from "@/stores/useStore";
 
 const clothingBrands = [
   "digər brend",
@@ -109,7 +108,6 @@ const CreateAnnouncementForm = () => {
     userName: "",
   };
 
-  // Общий state для формы
   const [formData, setFormData] = useState(initialForm);
   const [loading, setLoading] = useState(false);
 
@@ -127,7 +125,6 @@ const CreateAnnouncementForm = () => {
   const [categories, setCategories] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
 
-  // Универсальная функция для обработки изменений в input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -137,12 +134,11 @@ const CreateAnnouncementForm = () => {
     setFormData((prev) => ({ ...prev, gender: value }));
   };
 
-  // Обработка выбора файлов с предварительным просмотром
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
 
-    if (files.length > 4) {
-      toast("Maksimum 4 şəkil yükləyə bilərsiniz!");
+    if (files.length > 3) {
+      toast("Maksimum 3 şəkil yükləyə bilərsiniz!");
       return;
     }
 
@@ -178,7 +174,6 @@ const CreateAnnouncementForm = () => {
   const createAnnouncement = async (e) => {
     e.preventDefault();
 
-    // Проверка заполненности всех обязательных полей
     if (
       !formData.clothingCollection ||
       !formData.category ||
@@ -195,22 +190,17 @@ const CreateAnnouncementForm = () => {
       return;
     }
 
-    // Загрузка изображений на Cloudinary перед отправкой данных формы
     const uploadedImageUrls = await uploadImages(formData.images);
 
-    // Обновление данных формы с URL изображений
     const updatedFormData = { ...formData, images: uploadedImageUrls };
     setLoading(true);
 
     try {
-      // Отправка данных формы на сервер
       await instance.post("/announcements", updatedFormData);
       toast.success("Elan uğurla yaradıldı");
-
-      // Сброс данных формы
       setFormData({
         ...initialForm,
-        userPhone: user.phone, // Снова задаём userPhone
+        userPhone: user.phone,
         userName: user.firstName,
       });
       setImagePreviews([]);

@@ -3,12 +3,15 @@ import instance from "@/utils/baseUrl";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
+import EditModal from "@/components/myProfile/EditModal";
 
 const MyProfile = () => {
   const [myAnnouncements, setMyAnnouncements] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [announcementToDelete, setAnnouncementToDelete] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
 
   const fetchAnnouncements = async () => {
     setLoading(true);
@@ -44,6 +47,11 @@ const MyProfile = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setAnnouncementToDelete(null);
+  };
+
+  const openEditModal = (announcement) => {
+    setSelectedAnnouncement(announcement);
+    setIsEditModalOpen(true);
   };
 
   useEffect(() => {
@@ -87,7 +95,10 @@ const MyProfile = () => {
                     >
                       sil
                     </button>
-                    <button className="bg-black text-white py-1 px-4 rounded-md">
+                    <button
+                      onClick={() => openEditModal(item)}
+                      className="bg-black text-white py-1 px-4 rounded-md"
+                    >
                       düzəlt
                     </button>
                   </div>
@@ -99,7 +110,6 @@ const MyProfile = () => {
           )}
         </section>
       </Container>
-
       {/* Модальное окно для подтверждения удаления */}
       {isModalOpen && (
         <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -122,6 +132,18 @@ const MyProfile = () => {
           </div>
         </div>
       )}
+      {/* Модальное окно для редактирования */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 flex justify-center min-h-screen z-50">
+          <EditModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            announcement={selectedAnnouncement}
+            onSave={fetchAnnouncements}
+          />
+        </div>
+      )}
+      ;
     </div>
   );
 };

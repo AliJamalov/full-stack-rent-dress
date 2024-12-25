@@ -3,6 +3,7 @@ import Container from "../common/Container";
 import instance from "@/utils/baseUrl";
 import { MapPinHouse, Phone } from "lucide-react";
 import { TailSpin } from "react-loader-spinner";
+import StoreEditModal from "./StoreEditModal";
 
 const Store = ({ storeId }) => {
   const [store, setStore] = useState({});
@@ -14,7 +15,7 @@ const Store = ({ storeId }) => {
       const response = await instance.get(`/store/${storeId}`);
       setStore(response.data[0]);
     } catch (error) {
-      console.log("error fetchin data", error);
+      console.log("error fetching data", error);
     } finally {
       setLoading(false);
     }
@@ -23,6 +24,10 @@ const Store = ({ storeId }) => {
   useEffect(() => {
     fetchStore();
   }, []);
+
+  const handleUpdate = (updatedStore) => {
+    setStore(updatedStore);
+  };
 
   if (loading) {
     return (
@@ -43,7 +48,8 @@ const Store = ({ storeId }) => {
               alt={store.storeName}
             />
           </div>
-          <p className="my-4">{store.storeDescription}</p>
+          <p className="my-4">{store.storeName}</p>
+          <p>{store.storeDescription}</p>
           <div className="flex items-center gap-3 mr-[54px]">
             <MapPinHouse />
             <p className="my-4">{store.storeAddress}</p>
@@ -53,6 +59,9 @@ const Store = ({ storeId }) => {
             <p>{store.phone}</p>
           </div>
         </section>
+        <div className="flex justify-end mt-3">
+          <StoreEditModal store={store} onUpdate={handleUpdate} />
+        </div>
       </Container>
     </section>
   );

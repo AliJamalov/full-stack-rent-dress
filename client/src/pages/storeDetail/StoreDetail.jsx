@@ -1,10 +1,14 @@
 import Announcements from "@/components/storeDetail/Announcements";
 import Store from "@/components/storeDetail/Store";
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 const StoreDetail = () => {
   const { storeId } = useParams();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <section>
