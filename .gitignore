@@ -1,0 +1,39 @@
+# Node.js dependencies
+node_modules/
+
+# Build output
+/dist/
+/build/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE and editor-specific files
+.vscode/
+.idea/
+
+# npm package lock file (if you are using yarn, it should be ignored as well)
+package-lock.json
+yarn.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Temporary files
+*.swp
+*.swo
+
+# Ignore all directories with node_modules (in case you have nested node_modules)
+**/node_modules/
