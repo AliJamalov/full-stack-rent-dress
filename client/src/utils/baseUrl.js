@@ -3,7 +3,7 @@ import axios from "axios";
 const isLocal = window.location.hostname === "localhost";
 const local = isLocal
   ? "http://localhost:5000/api"
-  : "https://rent-dress-server.onrender.com";
+  : "https://rent-dress-server.onrender.com/api";
 
 const instance = axios.create({
   baseURL: local,
