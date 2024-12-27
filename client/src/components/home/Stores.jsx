@@ -41,16 +41,16 @@ const Stores = () => {
                 <SwiperSlide key={index}>
                   <Link
                     to={`/store-detail/${store.ownerId}`}
-                    className="bg-slate-200 rounded-md p-2"
+                    className="bg-slate-200 rounded-md"
                   >
                     <div className="max-w-[150px] bg-slate-200 p-3">
                       <img
-                        className="w-full max-h-[100px] rounded-md object-contain"
+                        className="w-full max-h-[100px] rounded-md object-cover"
                         src={store.storePhoto}
                         alt={store.storeName}
                       />
                     </div>
-                    <p className="truncate">{store.storeName}</p>
+                    <p className="truncate mt-1">{store.storeName}</p>
                   </Link>
                 </SwiperSlide>
               ))}

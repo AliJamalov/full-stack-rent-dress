@@ -40,6 +40,7 @@ const Register = () => {
         toast.success("Qeydiyyat uğurla başa çatdı");
         setFormData(initialForm);
         navigate("/");
+        window.location.reload();
       } else {
         setErrorMessage(response.message);
       }

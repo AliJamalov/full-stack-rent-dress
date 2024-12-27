@@ -5,6 +5,7 @@ import { Heart, LogOutIcon, Plus, Store, User } from "lucide-react";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { TailSpin } from "react-loader-spinner";
 import Login from "../home/Login";
+import { RiAdminLine } from "react-icons/ri";
 
 const Header = ({ handleOpenLogin, isOpenLogin }) => {
   const { user, isLoading, logout } = useAuthStore();
@@ -57,6 +58,11 @@ const Header = ({ handleOpenLogin, isOpenLogin }) => {
                 </h1>
               </div>
             </Link>
+            {user?.role === "admin" && (
+              <Link to={"/admin"}>
+                <RiAdminLine className="text-[30px]" />
+              </Link>
+            )}
             <div>
               <ul className="flex items-center gap-4">
                 {categories.map((category) => (

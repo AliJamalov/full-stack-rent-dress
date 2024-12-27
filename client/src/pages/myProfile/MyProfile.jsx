@@ -143,7 +143,6 @@ const MyProfile = () => {
           />
         </div>
       )}
-      ;
     </div>
   );
 };

@@ -11,6 +11,8 @@ import announcementRouter from "./routes/shop/announcement.routes.js";
 import categoryRouter from "./routes/admin/category.routes.js";
 import clothingCollectionRouter from "./routes/admin/clothingCollection.routes.js";
 import heroSectionRouter from "./routes/admin/heroSection.routes.js";
+import statsRouter from "./routes/admin/stats.routes.js";
+import wishlistRouter from "./routes/admin/stats.routes.js";
 
 const app = express();
 app.use(express.json());
@@ -30,11 +32,13 @@ app.use("/api/users", userRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/clothingCollections", clothingCollectionRouter);
 app.use("/api/heroSections", heroSectionRouter);
+app.use("/api/stats", statsRouter);
 
 // client routes
 app.use("/api/auth", authRouter);
 app.use("/api/store", storeRouter);
 app.use("/api/announcements", announcementRouter);
+app.use("/api/wishlist", wishlistRouter);
 
 const PORT = process.env.PORT;
 const MONGODB_URL = process.env.MONGODB_URL;

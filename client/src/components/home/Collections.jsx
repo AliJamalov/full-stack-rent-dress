@@ -31,16 +31,16 @@ const Collections = () => {
     <section className="my-[40px]">
       <Container>
         <h1 className="text-3xl font-semibold mb-4">Kolleksiyalar</h1>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {isLoading
             ? skeletonArray.map((_, index) => <SkeletonCard key={index} />)
             : collections.map((item, index) => (
                 <Link
                   to={`/catalog?clothingCollection=${item.title}`}
                   key={index}
-                  className="my-2"
+                  className="my-1"
                 >
-                  <div className="w-full h-[250px] sm:h-[300px] md:h-[300px] lg:h-[300px]">
+                  <div className="w-full h-[150px] sm:h-[300px] md:h-[300px] lg:h-[300px]">
                     <img
                       className="w-full h-full object-cover rounded-lg"
                       src={item.image}

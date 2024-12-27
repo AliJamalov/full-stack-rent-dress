@@ -15,9 +15,9 @@ const router = express.Router();
 router.post("/", checkAuth, createAnnouncement);
 router.get("/", getFilteredAnnouncements);
 router.get("/byUser", checkAuth, getUserAnnouncements);
-router.get("/:userId", getStoreAnnouncements);
 router.get("/annId/:id", getAnnouncementById);
 router.patch("/:id", checkAuth, updateAnnouncement);
 router.delete("/:id", checkAuth, deleteAnnouncement);
+router.get("/:userId", getStoreAnnouncements);
 
 export default router;

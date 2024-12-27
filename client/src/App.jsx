@@ -17,6 +17,9 @@ import Catalog from "./pages/catalog/Catalog";
 import CreateStore from "./pages/createStore/CreateStore";
 import OwnerKabinet from "./pages/ownerKabinet/OwnerKabinet";
 import StoreDetail from "./pages/storeDetail/StoreDetail";
+import Announcements from "./admin/pages/Announcements";
+import Stores from "./admin/pages/Stores";
+import Dashboard from "./admin/components/Dashboard";
 
 function App() {
   const { getMe } = useAuthStore();
@@ -44,10 +47,13 @@ function App() {
       <Routes>
         {/*Admin Routes*/}
         <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
           <Route path="users" element={<Users />} />
           <Route path="categories" element={<Categories />} />
           <Route path="hero-section" element={<HeroSection />} />
           <Route path="clothing-collection" element={<ClothingCollection />} />
+          <Route path="announcements" element={<Announcements />} />
+          <Route path="stores" element={<Stores />} />
         </Route>
         {/*Client Routes*/}
         <Route

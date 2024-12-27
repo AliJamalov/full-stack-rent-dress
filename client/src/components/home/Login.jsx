@@ -26,8 +26,6 @@ const Login = ({ handleOpenLogin }) => {
 
     try {
       const response = await login(userName, password);
-      console.log(response);
-
       // Проверяем, был ли ответ успешным
       if (response.success) {
         toast.success("Sistemə uğurla daxil oldunuz");
