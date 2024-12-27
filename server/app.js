@@ -12,7 +12,7 @@ import categoryRouter from "./routes/admin/category.routes.js";
 import clothingCollectionRouter from "./routes/admin/clothingCollection.routes.js";
 import heroSectionRouter from "./routes/admin/heroSection.routes.js";
 import statsRouter from "./routes/admin/stats.routes.js";
-import wishlistRouter from "./routes/admin/stats.routes.js";
+import wishlistRouter from "./routes/shop/wishlist.routes.js";
 
 const app = express();
 app.use(express.json());

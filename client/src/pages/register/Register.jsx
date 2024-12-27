@@ -160,17 +160,19 @@ const Register = () => {
               bilərsiniz:
             </p>
             <ul className="mb-4 list-disc pl-5">
-              <li>Öz məhsullarınızı təqdim edə bilərsiniz.</li>
-              <li>Platformada satışa başlamaq çox sadədir.</li>
+              <li>Şəxsi brendin tanıtımı.</li>
+              <li>Saytda butiklər üçün xüsusi yer.</li>
+              <li>Admin panel</li>
               <li>
-                Mağazanızın performansını izləyərək təkmilləşdirə bilərsiniz.
+                Ferdi sahibkarlardan fergli olarag sekil yerlesdirme bazasi
+                1000% coxdur
               </li>
             </ul>
             <p className="mb-4">
               Mağaza sahibi olaraq qeydiyyatdan keçmək üçün bizimlə əlaqə
               saxlayın:
             </p>
-            <p className="font-semibold">Telefon: +994 50 123 45 67</p>
+            <p className="font-semibold">Telefon: +994 51 609 92 28</p>
             <Link to={"/"}>
               <Button
                 onClick={() => setIsOpenRegisterForStore(false)}

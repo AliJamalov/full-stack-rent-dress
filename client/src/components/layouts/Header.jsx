@@ -81,9 +81,12 @@ const Header = ({ handleOpenLogin, isOpenLogin }) => {
                 {user && (
                   <LogOutIcon className="cursor-pointer" onClick={logout} />
                 )}
-                <div className="p-2 rounded-full bg-[#ab386e]">
+                <Link
+                  className="p-2 rounded-full bg-[#ab386e]"
+                  to={"/wishlist"}
+                >
                   <Heart color="white" size={16} />
-                </div>
+                </Link>
               </div>
               <Link
                 onClick={(e) => {

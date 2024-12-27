@@ -5,14 +5,27 @@ import { Link } from "react-router-dom";
 import instance from "@/utils/baseUrl";
 import { Heart } from "lucide-react";
 import { useWishlist } from "@/stores/useWishlist";
+import { useAuthStore } from "@/stores/useAuthStore";
+import toast from "react-hot-toast";
 
 const Elanlar = () => {
-  const { toggleWishList, wishItems } = useWishlist(); // Добавляем wishItems для отображения статуса в избранном
   const [elanlar, setElanlar] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const observer = useRef(null);
+
+  // Получаем избранные объявления из localStorage
+  const getWishlistFromLocalStorage = () => {
+    const savedWishlist = JSON.parse(localStorage.getItem("wishItems")) || [];
+    return savedWishlist;
+  };
+
+  const { user } = useAuthStore();
+
+  // Подключаем wishlist из zustand хранилища
+  const { wishItems, addItemToWishlist, removeItemFromWishlist } =
+    useWishlist();
 
   const fetchElanlar = async (page) => {
     setLoading(true);
@@ -47,14 +60,39 @@ const Elanlar = () => {
     fetchElanlar(currentPage);
   }, [currentPage]);
 
-  const handleTogleWishlist = async (e, itemId) => {
-    e.preventDefault();
-    e.stopPropagation();
+  useEffect(() => {
+    // При монтировании компонента загружаем избранные ID из localStorage
+    const wishlistFromStorage = getWishlistFromLocalStorage();
+    wishlistFromStorage.forEach((itemId) => {
+      addItemToWishlist(itemId);
+    });
+  }, [addItemToWishlist]);
 
+  // Функция для добавления/удаления предметов из wishlist
+  const handleWishlist = (elanId, event) => {
+    event.preventDefault(); // Предотвращаем переход по ссылке
+    event.stopPropagation(); // Останавливаем распространение события
+
+    if (!user) {
+      toast("Elanı favoritlərə əlavə etmək üçün daxil olun");
+      return;
+    }
     try {
-      await toggleWishList(itemId); // Тогглинг для добавления или удаления из wishlist
+      if (wishItems.some((item) => item === elanId)) {
+        // Если элемент уже в избранном, удаляем его
+        removeItemFromWishlist(elanId);
+        // Обновляем localStorage
+        const updatedWishlist = wishItems.filter((item) => item !== elanId);
+        localStorage.setItem("wishItems", JSON.stringify(updatedWishlist));
+      } else {
+        // Если элемента нет в избранном, добавляем
+        addItemToWishlist(elanId);
+        // Обновляем localStorage
+        const updatedWishlist = [...wishItems, elanId];
+        localStorage.setItem("wishItems", JSON.stringify(updatedWishlist));
+      }
     } catch (error) {
-      console.log("error adding to wishlist", error);
+      console.error("Ошибка при добавлении в wishlist:", error);
     }
   };
 
@@ -66,23 +104,23 @@ const Elanlar = () => {
         </h1>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:gap-6">
           {elanlar.map((elan, index) => {
-            const isWishlisted = wishItems.some(
-              (item) => item.productId === elan._id
-            ); // Проверяем, есть ли товар в списке избранных
-
+            const isInWishlist = wishItems.includes(elan._id); // Проверяем, есть ли элемент в wishlist
             return (
               <Link
                 className="relative"
                 key={index}
                 to={`/elan/${elan._id}`}
                 ref={index === elanlar.length - 1 ? lastElementRef : null}
+                onClick={(event) => event.preventDefault()} // Предотвращаем переход по ссылке
               >
                 <div
-                  onClick={(e) => handleTogleWishlist(e, elan._id)}
-                  className="absolute right-4 top-2"
+                  className="absolute right-4 top-2 cursor-pointer"
+                  onClick={(event) => handleWishlist(elan._id, event)} // Передаем событие в handleWishlist
                 >
                   <Heart
-                    color={isWishlisted ? "red" : "gray"} // Меняем цвет в зависимости от того, в избранном ли товар
+                    fill={isInWishlist ? "#ab386e" : "gray"} // Фиолетовое если в избранном
+                    stroke="none" // Убираем обводку, если она не нужна
+                    className={`w-6 h-6 cursor-pointer transition-all duration-200`}
                   />
                 </div>
                 <div className="bg-white shadow-md rounded-lg mx-auto w-full max-w-[170px] sm:max-w-[230px] md:max-w-[250px] lg:max-w-[310px] overflow-hidden">

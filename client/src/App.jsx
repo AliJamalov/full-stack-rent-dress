@@ -20,6 +20,7 @@ import StoreDetail from "./pages/storeDetail/StoreDetail";
 import Announcements from "./admin/pages/Announcements";
 import Stores from "./admin/pages/Stores";
 import Dashboard from "./admin/components/Dashboard";
+import Wishlist from "./pages/wishlist/Wishlist";
 
 function App() {
   const { getMe } = useAuthStore();
@@ -70,6 +71,7 @@ function App() {
         <Route path="/create-store" element={<CreateStore />} />
         <Route path="/store-panel" element={<OwnerKabinet />} />
         <Route path="/store-detail/:storeId" element={<StoreDetail />} />
+        <Route path="/wishlist" element={<Wishlist />} />
       </Routes>
     </>
   );

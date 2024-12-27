@@ -1,135 +1,71 @@
-import WishList from "../../models/wishlist.model.js";
-import { Announcement } from "../../models/announcement.js";
+import Wishlist from "../../models/wishlist.model.js";
 
-export const toggleWishList = async (req, res) => {
+export const getWishlist = async (req, res) => {
   try {
-    const { productId } = req.body; // Получаем ID товара из тела запроса
-    const userId = req.userId; // Извлекаем userId из middleware
+    const userId = req.userId; // userId из мидлвара
+    const wishlist = await Wishlist.findOne({ userId }).populate({
+      path: "items",
+      select: "category pricePerDay images", // Укажите, какие поля вы хотите получить
+    });
 
-    if (!productId) {
-      return res.status(400).json({
-        success: false,
-        message: "Product ID is required!",
-      });
+    if (!wishlist) {
+      return res.status(404).json({ message: "Wishlist not found" });
     }
 
-    // Проверяем, существует ли такой товар (объявление)
-    const product = await Announcement.findById(productId);
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
-    }
+    res.status(200).json(wishlist);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
-    // Проверяем, добавлен ли товар в список желаемого
-    const existingWish = await WishList.findOne({ userId, productId });
+export const addItemToWishlist = async (req, res) => {
+  const { itemId } = req.body;
+  const userId = req.userId; // Получаем userId из middleware
 
-    if (existingWish) {
-      // Если товар уже в списке желаемого, удаляем его
-      await WishList.deleteOne({ userId, productId });
-      return res.status(200).json({
-        success: true,
-        message: "Product removed from wishlist successfully",
-      });
-    } else {
-      // Если товара нет в списке, добавляем его
-      const newWishItem = new WishList({
+  try {
+    // Ищем существующий wishlist пользователя
+    let wishlist = await Wishlist.findOne({ userId });
+
+    // Если wishlist не найден, создаем новый
+    if (!wishlist) {
+      wishlist = new Wishlist({
         userId,
-        productId,
+        items: [itemId],
       });
-      await newWishItem.save();
-      return res.status(201).json({
-        success: true,
-        message: "Product added to wishlist successfully",
-        data: newWishItem,
-      });
+      await wishlist.save();
+      return res.status(201).json(wishlist); // Возвращаем созданный wishlist
     }
+
+    // Если wishlist существует, добавляем новый элемент
+    if (!wishlist.items.includes(itemId)) {
+      wishlist.items.push(itemId);
+      await wishlist.save();
+    }
+
+    res.status(200).json(wishlist); // Возвращаем обновленный wishlist
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Error toggling product in wishlist",
-    });
+    console.error("Ошибка при добавлении в wishlist:", error);
+    res.status(500).json({ message: "Ошибка при добавлении в wishlist" });
   }
 };
 
-export const getWishListItems = async (req, res) => {
+export const removeItemFromWishlist = async (req, res) => {
   try {
-    const userId = req.userId; // Извлекаем userId из middleware
+    const { itemId } = req.body;
+    const userId = req.userId; // userId из мидлвара
 
-    // Получаем все товары в списке желаемого для текущего пользователя
-    const wishItems = await WishList.find({ userId }).populate({
-      path: "productId", // Заполняем данные товара (объявления)
-      select:
-        "description clothingCollection brand gender category size color pricePerDay images userId city userPhone userName",
-    });
-
-    if (!wishItems.length) {
-      return res.status(404).json({
-        success: false,
-        message: "No items found in wishlist",
-      });
+    const wishlist = await Wishlist.findOne({ userId });
+    if (!wishlist) {
+      return res.status(404).json({ message: "Wishlist not found" });
     }
 
-    // Формируем массив с нужной информацией о товарах
-    const populateCartItems = wishItems.map((item) => ({
-      productId: item.productId._id,
-      description: item.productId.description,
-      clothingCollection: item.productId.clothingCollection,
-      brand: item.productId.brand,
-      gender: item.productId.gender,
-      category: item.productId.category,
-      size: item.productId.size,
-      color: item.productId.color,
-      pricePerDay: item.productId.pricePerDay,
-      images: item.productId.images,
-      userId: item.productId.userId,
-      city: item.productId.city,
-      userPhone: item.productId.userPhone,
-      userName: item.productId.userName,
-    }));
+    wishlist.items = wishlist.items.filter(
+      (item) => item.toString() !== itemId
+    );
+    await wishlist.save();
 
-    res.status(200).json({
-      success: true,
-      data: populateCartItems,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Error retrieving wishlist items",
-    });
-  }
-};
-
-export const removeFromWishList = async (req, res) => {
-  try {
-    const { productId } = req.params; // Получаем ID товара из параметров запроса
-    const userId = req.userId; // Извлекаем userId из middleware
-
-    // Проверяем, есть ли товар в списке желаемого пользователя
-    const existingWish = await WishList.findOne({ userId, productId });
-
-    if (!existingWish) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found in wishlist",
-      });
-    }
-
-    // Удаляем товар из списка желаемого
-    await WishList.deleteOne({ userId, productId });
-
-    res.status(200).json({
-      success: true,
-      message: "Product removed from wishlist successfully",
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Error removing product from wishlist",
-    });
+    res.status(200).json(wishlist);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
