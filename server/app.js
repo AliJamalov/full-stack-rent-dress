@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import axios from "axios";
 
 // Routes
 import authRouter from "./routes/auth/auth.routes.js";
@@ -21,7 +22,7 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://rent-dress.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -40,18 +41,35 @@ app.use("/api/store", storeRouter);
 app.use("/api/announcements", announcementRouter);
 app.use("/api/wishlist", wishlistRouter);
 
+// Function to prevent server from going to sleep
+const preventSleep = (url, interval = 25 * 60 * 1000) => {
+  setInterval(async () => {
+    try {
+      const response = await axios.get(url);
+      console.log(`Ping successful: ${response.status}`);
+    } catch (error) {
+      console.error(`Ping failed: ${error.message}`);
+    }
+  }, interval);
+};
+
+// Database connection
 const PORT = process.env.PORT;
 const MONGODB_URL = process.env.MONGODB_URL;
-
-app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
-});
 
 mongoose
   .connect(MONGODB_URL)
   .then(() => {
     console.log("Database connection established");
+
+    // Call the preventSleep function after DB connection
+    preventSleep(`https://rent-dress-server.onrender.com`); // Замените на ваш URL
   })
   .catch((err) => {
     console.log(err);
   });
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server listening on ${PORT}`);
+});
