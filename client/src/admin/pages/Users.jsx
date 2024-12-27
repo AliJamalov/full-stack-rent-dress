@@ -7,7 +7,7 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import AddModal from "../components/users/addModal";
+import AddModal from "../components/users/AddModal";
 import EditModal from "../components/users/EditModal";
 import instance from "@/utils/baseUrl";
 import toast from "react-hot-toast";
