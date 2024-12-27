@@ -141,9 +141,12 @@ const Header = ({ handleOpenLogin, isOpenLogin }) => {
                 </Link>
               ) : null}
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-[#ab386e]">
+                <Link
+                  className="p-2 rounded-full bg-[#ab386e]"
+                  to={"/wishlist"}
+                >
                   <Heart color="white" size={16} />
-                </div>
+                </Link>
                 {user && <LogOutIcon onClick={logout} />}
               </div>
             </div>
@@ -152,7 +155,7 @@ const Header = ({ handleOpenLogin, isOpenLogin }) => {
                 <div className="w-[70px]">
                   <img
                     className="w-full rounded-sm"
-                    src="/public/images/logo-best.jpg"
+                    src="/images/logo-best.jpg"
                     alt="logo"
                   />
                 </div>
