@@ -165,20 +165,20 @@ const Header = ({ handleOpenLogin, isOpenLogin }) => {
               </div>
             </Link>
             <div className="flex items-center gap-2">
-              <button
-                className="flex items-center gap-1 bg-green-600 rounded-sm shadow-md text-white p-2"
+              <Link
                 onClick={(e) => {
                   if (!user) {
-                    e.preventDefault(); // Останавливаем переход по ссылке
-                    handleOpenLogin(); // Открываем модальное окно для логина
+                    e.preventDefault(); // Останавливает переход на страницу
+                    handleOpenLogin();
                   }
                 }}
+                to="/create-announcement"
               >
-                <Plus size={14} />
-                <Link to="/create-announcement" className="text-[14px]">
-                  elan
-                </Link>
-              </button>
+                <div className="flex items-center gap-2 bg-green-600 rounded-sm shadow-md text-white p-1 cursor-pointer">
+                  <Plus />
+                  <p>elan</p>
+                </div>
+              </Link>
             </div>
           </div>
         </div>
