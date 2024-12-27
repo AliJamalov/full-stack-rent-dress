@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import path from "path";
 
 // Routes
 import authRouter from "./routes/auth/auth.routes.js";
@@ -27,24 +28,32 @@ app.use(
   })
 );
 
-// admin routes
+// Admin routes
 app.use("/api/users", userRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/clothingCollections", clothingCollectionRouter);
 app.use("/api/heroSections", heroSectionRouter);
 app.use("/api/stats", statsRouter);
 
-// client routes
+// Client routes
 app.use("/api/auth", authRouter);
 app.use("/api/store", storeRouter);
 app.use("/api/announcements", announcementRouter);
 app.use("/api/wishlist", wishlistRouter);
 
+// Serve static files from the client build directory
+app.use(express.static(path.join(__dirname, "client", "build")));
+
+// Serve the index.html for all other routes (for React Router)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
+
 const PORT = process.env.PORT;
 const MONGODB_URL = process.env.MONGODB_URL;
 
 app.listen(PORT, () => {
-  console.log(`Server listeinig on ${PORT}`);
+  console.log(`Server listening on ${PORT}`);
 });
 
 mongoose
