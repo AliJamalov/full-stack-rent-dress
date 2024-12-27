@@ -22,7 +22,7 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://rent-dress.vercel.app/"],
+    origin: ["http://localhost:5173", "https://rent-dress.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -63,7 +63,7 @@ mongoose
     console.log("Database connection established");
 
     // Call the preventSleep function after DB connection
-    preventSleep(`https://rent-dress-server.onrender.com`); // Замените на ваш URL
+    preventSleep(`https://rent-dress-server.onrender.com`);
   })
   .catch((err) => {
     console.log(err);
