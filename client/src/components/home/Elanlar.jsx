@@ -111,11 +111,13 @@ const Elanlar = () => {
                 key={index}
                 to={`/elan/${elan._id}`}
                 ref={index === elanlar.length - 1 ? lastElementRef : null}
-                onClick={(event) => event.preventDefault()} // Предотвращаем переход по ссылке
               >
                 <div
                   className="absolute right-4 top-2 cursor-pointer"
-                  onClick={(event) => handleWishlist(elan._id, event)} // Передаем событие в handleWishlist
+                  onClick={(event) => {
+                    event.stopPropagation(); // Предотвращаем распространение события клика
+                    handleWishlist(elan._id, event); // Передаем событие в handleWishlist
+                  }}
                 >
                   <Heart
                     fill={isInWishlist ? "#ab386e" : "gray"} // Фиолетовое если в избранном
