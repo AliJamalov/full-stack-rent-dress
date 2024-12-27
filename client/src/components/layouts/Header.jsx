@@ -49,7 +49,7 @@ const Header = ({ handleOpenLogin, isOpenLogin }) => {
                 <div className="w-[100px]">
                   <img
                     className="w-full rounded-sm"
-                    src="/public/images/logo-best.jpg"
+                    src="/images/logo-best.jpg"
                     alt="logo-image"
                   />
                 </div>
