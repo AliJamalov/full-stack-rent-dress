@@ -2,7 +2,6 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
-import path from "path";
 
 // Routes
 import authRouter from "./routes/auth/auth.routes.js";
@@ -22,10 +21,7 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://full-stack-rent-dress.onrender.com",
-    ],
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -43,14 +39,6 @@ app.use("/api/auth", authRouter);
 app.use("/api/store", storeRouter);
 app.use("/api/announcements", announcementRouter);
 app.use("/api/wishlist", wishlistRouter);
-
-// Serve static files from the client build directory
-app.use(express.static(path.join(__dirname, "client", "build")));
-
-// Serve the index.html for all other routes (for React Router)
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-});
 
 const PORT = process.env.PORT;
 const MONGODB_URL = process.env.MONGODB_URL;
