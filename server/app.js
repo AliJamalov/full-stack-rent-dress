@@ -41,29 +41,30 @@ app.use("/api/store", storeRouter);
 app.use("/api/announcements", announcementRouter);
 app.use("/api/wishlist", wishlistRouter);
 
-// Function to prevent server from going to sleep
-const preventSleep = (url, interval = 25 * 60 * 1000) => {
-  setInterval(async () => {
-    try {
-      const response = await axios.get(url);
-      console.log(`Ping successful: ${response.status}`);
-    } catch (error) {
-      console.error(`Ping failed: ${error.message}`);
-    }
-  }, interval);
-};
-
 // Database connection
 const PORT = process.env.PORT;
 const MONGODB_URL = process.env.MONGODB_URL;
+
+// Периодический пинг для поддержания активности
+const SERVER_URL = "https://rent-dress-server.onrender.com/api";
+const PING_INTERVAL = 5 * 60 * 1000; // Интервал в миллисекундах (5 минут)
+
+const pingServer = async () => {
+  try {
+    const response = await axios.get(SERVER_URL);
+    console.log(`Ping successful: ${response.status} - ${response.statusText}`);
+  } catch (error) {
+    console.error(`Ping failed: ${error.message}`);
+  }
+};
+
+// Запускаем периодические пинги
+setInterval(pingServer, PING_INTERVAL);
 
 mongoose
   .connect(MONGODB_URL)
   .then(() => {
     console.log("Database connection established");
-
-    // Call the preventSleep function after DB connection
-    preventSleep(`https://rent-dress-server.onrender.com`);
   })
   .catch((err) => {
     console.log(err);
